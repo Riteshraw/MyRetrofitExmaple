@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.project.myretrofitexmaple.R;
+import com.example.project.myretrofitexmaple.model.Login;
 import com.example.project.myretrofitexmaple.model.User;
 import com.example.project.myretrofitexmaple.rest.ApiClient;
 import com.example.project.myretrofitexmaple.rest.ApiInterface;
@@ -18,6 +19,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     //http://answerandwin.nubiz.co.in/api/Login/GetUserInfoByMobileNo?MobileNo=9716927111
+    //http://answerandwin.nubiz.co.in/api/Login/AddNewUser?DisplayName=Sameer&Email=sameer@gmail.com&Mobile=9875825658&Password=12345&DeviceID=sfaf&Token=adsd&DOB=08/07/1992
+    //http://answerandwin.nubiz.co.in/api/Login/ValidateUser
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -25,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getExample();
+        postExample();
+
+    }
+
+    private void getExample() {
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<User> call = apiInterface.getUserDetails("9716927111");
 
@@ -40,6 +49,24 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, t.toString());
             }
         });
+    }
 
+    private void postExample() {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<User> call = apiInterface.postValidateUser(
+                new Login("9716927222", "12345", "123456789", "123456789123456789")
+        );
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
     }
 }

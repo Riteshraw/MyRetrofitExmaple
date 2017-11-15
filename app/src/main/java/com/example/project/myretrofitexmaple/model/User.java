@@ -32,6 +32,12 @@ public class User {
     @SerializedName("Token")
     private String userFCMToken;
 
+    @SerializedName("Name")
+    private String name;
+
+    @SerializedName("UserGuid")
+    private String userGuid;
+
     public User(String userImage, String userName, String userMobile, String userEmail, String userPassword, String userDOB, String userDeviceId, String userFCMToken) {
         this.userImage = userImage;
         this.userName = userName;
@@ -105,5 +111,21 @@ public class User {
 
     public void setUserFCMToken(String userFCMToken) {
         this.userFCMToken = userFCMToken;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUserGuid() {
+        return userGuid;
+    }
+
+    public void setUserGuid(String userGuid) {
+        this.userGuid = userGuid;
     }
 }

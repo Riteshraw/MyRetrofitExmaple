@@ -23,14 +23,20 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Multipart;
 
 public class MainActivity extends AppCompatActivity {
+    //http://answerandwin.nubiz.co.in/api/Login/ValidateUser
     //http://answerandwin.nubiz.co.in/api/Login/GetUserInfoByMobileNo?MobileNo=9716927111
     //http://answerandwin.nubiz.co.in/api/Login/AddNewUser?DisplayName=Sameer&Email=sameer@gmail.com&Mobile=9875825658&Password=12345&DeviceID=sfaf&Token=adsd&DOB=08/07/1992
-    //http://answerandwin.nubiz.co.in/api/Login/ValidateUser
+    //http://answerandwin.nubiz.co.in/api/Login/UpdateUserInfo?DisplayName=Sameer&Email=sameer@gmail.com&Mobile=9874525698&Password=12345&DOB=08/07/1992
 
     //https://www.journaldev.com/13270/android-capture-image-camera-gallery
     //https://stackoverflow.com/questions/4989182/converting-java-bitmap-to-byte-array
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     String mCurrentPhotoPath;
     private ImageView imageView;
+    File photoFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.btn_img)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Uri uri = null;
                 dispatchTakePictureIntent();
-                imagePostExample();
+//                imagePostExample(uri);
             }
         });
 
@@ -99,15 +107,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void imagePostExample() {
+    private void imagePostExample(Uri uri) {
+        RequestBody requestBody = RequestBody.create(MultipartBody.FORM, "My data");
 
+        File originalFile = new File(uri.getPath());
+
+        RequestBody filePart = RequestBody.create(MediaType.parse(getContentResolver().getType(uri)), originalFile);
+        MultipartBody.Part requestPhoto = MultipartBody.Part.createFormData("photo", originalFile.getName(), filePart);
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<ResponseBody> call = apiInterface.updateUserDetails(requestBody, requestPhoto);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
 
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException e) {
@@ -116,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (photoFile != null) {
 //                Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider",photoFile);
-
                 Uri photoURI = Uri.fromFile(photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 //                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
@@ -129,8 +155,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            imageView.setImageBitmap(imageBitmap);
+            imageView.setImageURI(Uri.fromFile(photoFile));
         }
     }
 

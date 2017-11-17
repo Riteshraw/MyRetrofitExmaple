@@ -8,11 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.project.myretrofitexmaple.R;
 import com.example.project.myretrofitexmaple.model.Login;
@@ -36,7 +38,15 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     //http://answerandwin.nubiz.co.in/api/Login/ValidateUser
     //http://answerandwin.nubiz.co.in/api/Login/GetUserInfoByMobileNo?MobileNo=9716927111
-    //http://answerandwin.nubiz.co.in/api/Login/AddNewUser?DisplayName=Sameer&Email=sameer@gmail.com&Mobile=9875825658&Password=12345&DeviceID=sfaf&Token=adsd&DOB=08/07/1992
+    //http://answerandwin.nubiz.co.in/api/Login/AddNewUser?
+    // DisplayName=Sameer&
+    // Email=sameer@gmail.com&
+    // Mobile=9875825658&
+    // Password=12345&
+    // DeviceID=sfaf&
+    // Token=adsd&
+    // DOB=08/07/1992
+
     //http://answerandwin.nubiz.co.in/api/Login/UpdateUserInfo?DisplayName=Sameer&Email=sameer@gmail.com&Mobile=9874525698&Password=12345&DOB=08/07/1992
 
     //https://www.journaldev.com/13270/android-capture-image-camera-gallery
@@ -47,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
     private Uri photoUri = null;
+    private File photoFile = null;
     private Context context;
 
     @Override
@@ -62,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                photoUri = Utils.createMyImageFile(context);
-//                dispatchTakePictureIntent();
-                dispatchSelectPictureIntent();
-                //retrofitMultipartImagePostExample(uri);
+                photoFile = Utils.createMyImageFile(context);
+                photoUri = Uri.fromFile(Utils.createMyImageFile(context));
+                dispatchTakePictureIntent();
+//                dispatchSelectPictureIntent();
+//                retrofitMultipartImagePostExample(photoUri);
 
             }
 
@@ -120,10 +132,12 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageBitmap(imageBitmap);
             imageView.setImageURI(Uri.fromFile(photoUri));*/
 
-            if (data != null)
+            if (data.getData() != null)
                 photoUri = data.getData();
 
             imageView.setImageURI(photoUri);
+
+            retrofitMultipartImagePostExample(photoUri);
         }
     }
 
@@ -165,29 +179,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private RequestBody createPartFromString(String desc) {
+        return RequestBody.create(MultipartBody.FORM, desc);
+    }
+
+    @NonNull
+    private MultipartBody.Part prepareFilePart(String partName, Uri fileUri) {
+        // https://github.com/iPaulPro/aFileChooser/blob/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
+        // use the FileUtils to get the actual file by uri
+        File file = photoFile;
+
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(fileUri)),
+                        photoFile
+                );
+
+        // MultipartBody.Part is used to send also the actual file name
+        return MultipartBody.Part.createFormData(partName, file.getName(), requestFile);
+    }
+
     private void retrofitMultipartImagePostExample(Uri uri) {
         RequestBody requestBody = RequestBody.create(MultipartBody.FORM, "My data");
 
-        File originalFile = new File(uri.getPath());
+        File originalFile = photoFile;
 
         RequestBody filePart = RequestBody.create(MediaType.parse(getContentResolver().getType(uri)), originalFile);
         MultipartBody.Part requestPhoto = MultipartBody.Part.createFormData("photo", originalFile.getName(), filePart);
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 
-        Call<ResponseBody> call = apiInterface.updateUserDetails(requestBody, requestPhoto);
+        Call<ResponseBody> call = apiInterface.updateUserDetails2(
+                createPartFromString("Ritesh"),
+                createPartFromString("Ritesh@gmail.com "),
+                createPartFromString("9716927222"),
+                createPartFromString("12345"),
+                createPartFromString("12345678912345"),
+                createPartFromString("cwBWYZJ1QRs:APA91bGjUxbQxxWRAUxPKV3Z9FULLmyJ3cyDBrAPh9IQYAVKPZc92-KDzPuXbTuCp4KEeNXHFK2EZWxMdRh_7DaxrtqQ2zsGKl6rEMdSlD8L39NmpC2AWuyQBJwbRQGMYc6TvR6qE7_-"),
+                createPartFromString("25/11/1989"),
+                prepareFilePart("ImagePath", uri));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
+                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
 
 }

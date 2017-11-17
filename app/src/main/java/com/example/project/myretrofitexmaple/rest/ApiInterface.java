@@ -34,4 +34,17 @@ public interface ApiInterface {
             @Part("body") RequestBody body,
             @Part MultipartBody.Part photo
     );
+
+    @Multipart
+    @POST("Login/UpdateUserInfo")
+    Call<ResponseBody> updateUserDetails2(
+            @Part("DisplayName") RequestBody DisplayName,
+            @Part("Email") RequestBody Email,
+            @Part("Mobile") RequestBody Mobile,
+            @Part("Password") RequestBody Password,
+            @Part("DeviceID") RequestBody DeviceID,
+            @Part("Token") RequestBody Token,
+            @Part("DOB") RequestBody DOB,
+            @Part MultipartBody.Part photo
+    );
 }

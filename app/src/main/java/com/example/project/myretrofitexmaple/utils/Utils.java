@@ -42,7 +42,7 @@ public class Utils {
 
     }
 
-    public static Uri createMyImageFile(Context context) {
+    public static File createMyImageFile(Context context) {
         //https://developer.android.com/training/data-storage/files.html
         //https://www.androidhive.info/2013/09/android-working-with-camera-api/
 
@@ -63,7 +63,7 @@ public class Utils {
         //return uri
         Uri fileUri = Uri.fromFile(image);
 
-        return fileUri;
+        return image;
     }
 
     public static File getOutputMediaFile() {

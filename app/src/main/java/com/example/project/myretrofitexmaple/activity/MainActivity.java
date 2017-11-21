@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageBitmap(imageBitmap);
             imageView.setImageURI(Uri.fromFile(photoUri));*/
 
-            if (data.getData() != null)
+            if (data != null && data.getData() != null)
                 photoUri = data.getData();
 
             imageView.setImageURI(photoUri);
@@ -201,12 +201,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrofitMultipartImagePostExample(Uri uri) {
-        RequestBody requestBody = RequestBody.create(MultipartBody.FORM, "My data");
+        /*RequestBody requestBody = RequestBody.create(MultipartBody.FORM, "My data");
 
         File originalFile = photoFile;
 
         RequestBody filePart = RequestBody.create(MediaType.parse(getContentResolver().getType(uri)), originalFile);
-        MultipartBody.Part requestPhoto = MultipartBody.Part.createFormData("photo", originalFile.getName(), filePart);
+        MultipartBody.Part requestPhoto = MultipartBody.Part.createFormData("photo", originalFile.getName(), filePart);*/
 
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
 

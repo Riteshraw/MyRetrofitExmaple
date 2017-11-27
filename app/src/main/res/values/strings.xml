@@ -2,4 +2,8 @@
     <string name="app_name">My Retrofit Exmaple</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="action_websearch">search</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="app_not_available">not available</string>
 </resources>

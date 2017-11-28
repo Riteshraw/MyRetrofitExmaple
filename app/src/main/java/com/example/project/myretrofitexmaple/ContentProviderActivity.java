@@ -14,6 +14,13 @@ import android.widget.ListView;
 public class ContentProviderActivity extends FragmentActivity implements LoaderCallbacks<Cursor> {
     //http://wptrafficanalyzer.in/blog/android-populating-listview-from-sqlite-database-using-cursorloader-loadermanager-and-content-provider/
     //http://mrbool.com/android-content-provider-how-to-use-content-provider-for-data-access/30446
+
+    //---- Cursor loader
+    //https://developer.android.com/reference/android/support/v4/content/CursorLoader.html
+
+    //---- Custom cursor adapter
+    //http://www.gustekdev.com/2013/05/custom-cursoradapter-and-why-not-use.html
+    //http://www.mysamplecode.com/2013/03/android-simplecursoradapter-alternate-row-color.html
     SimpleCursorAdapter mAdapter;
     ListView mListView;
 
@@ -24,11 +31,13 @@ public class ContentProviderActivity extends FragmentActivity implements LoaderC
 
         mListView = (ListView) findViewById(R.id.listview);
 
-        mAdapter = new SimpleCursorAdapter(getBaseContext(),
+        mAdapter = new SimpleCursorAdapter(
+                getBaseContext(),
                 R.layout.listview_item_layout,
                 null,
                 new String[]{CustomerDB.KEY_CODE, CustomerDB.KEY_NAME, CustomerDB.KEY_PHONE},
-                new int[]{R.id.code, R.id.name, R.id.phone}, 0);
+                new int[]{R.id.code, R.id.name, R.id.phone},
+                0);
 
         mListView.setAdapter(mAdapter);
 

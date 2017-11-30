@@ -22,6 +22,7 @@ public class Customer extends ContentProvider{
     private static final int CUSTOMERS = 1;
 
     private static final UriMatcher uriMatcher ;
+
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "customers", CUSTOMERS);

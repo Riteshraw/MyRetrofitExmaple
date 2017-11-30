@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.RootActivity">
 
             <!--
@@ -25,11 +25,7 @@
             -->
         </activity>
         <activity android:name=".ContentProviderActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
@@ -37,10 +33,17 @@
             android:authorities="com.example.project.myretrofitexmaple.customer"
             android:exported="false" />
         <provider
-            android:name=".MyContentProvider"
-            android:authorities="com.example.project.myretrofitexmaple"
-            android:enabled="true"
-            android:exported="true"></provider>
+            android:name=".provider.UserProvider"
+            android:authorities="com.example.project.myretrofitexmaple.user"
+            android:exported="false" />
+
+        <activity android:name=".activity.UserProviderActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
